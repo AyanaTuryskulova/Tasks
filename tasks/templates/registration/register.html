@@ -13,22 +13,20 @@
     <div class="container">
         <p class="heading">Регистрация</p>
         <form method="POST" action="{% url 'register' %}">
-            {% csrf_token %}
-            <div class="box">
-                <p>Username</p>
-                <div> <input type="text" name="username" autocomplete="off" placeholder="Enter your username"> </div>
-            </div>
-            <div class="box">
-                <p>Password</p>
-                <div> <input type="password" name="password1" autocomplete="off" placeholder="Enter your password"> </div>
-            </div>
-            <div class="box">
-                <p>Confirm Password</p>
-                <div> <input type="password" name="password2" autocomplete="off" placeholder="Confirm your password"> </div>
-            </div> 
-            <button class="loginBtn">Зарегистрироваться</button>
+            {% csrf_token %}   
+            {% for field in form %}
+                <p>
+                    <label for="{{ field.id_for_label }}">{{ field.label }}:</label>
+                    {{ field }}
+                </p>
+                <div class="form-error">{{ field.errors }}</div>
+            {% endfor %}
+            <button type="submit">Зарегистрироваться</button>
         </form>
-        <p class="text">У вас есть аккаунт? <a href="{% url 'login' %}">Вход</a></p>
+        
+    
+        <p>У вас уже есть аккаунт? <a href="{% url 'login' %}">Войти</a></p>  
+
     </div>
 </body>
 </html>

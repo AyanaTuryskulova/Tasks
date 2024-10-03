@@ -1,10 +1,15 @@
+from pyexpat.errors import messages
 from django.shortcuts import get_object_or_404, render
 from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.forms import UserCreationForm
 from django.shortcuts import redirect #можем указать рандомную ссылку куда сайт направит 
+from django.urls import reverse_lazy
 from django.utils import timezone
 from .models import Task_post
-from .forms import PostForm
+from .forms import PostForm, RegisterUserForm
+from django.views.generic import CreateView
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.views.generic import DeleteView
+
 
 def page(request):
      return render(request, 'tasks/main_page.html')
@@ -60,17 +65,20 @@ def user_logout(request):
     logout(request)
     return redirect('login')
 
-def user_register(request):
-    if request.method == 'POST':
-        form = UserCreationForm({
-            'username': request.POST['username'],
-            'password1': request.POST['password1'],
-            'password2': request.POST['password2']
-        })  
-        if form.is_valid():
-            user = form.save()  
-            login(request, user) 
-            return redirect('tasks') 
-    else:
-        form = UserCreationForm()  
-    return render(request, 'registration/register.html', {'form': form})
+
+
+class RegisterUser(CreateView):
+    form_class = RegisterUserForm  
+    template_name = 'registration/register.html' 
+    success_url = reverse_lazy('login') 
+
+    def form_valid(self, form):
+        user = form.save()  
+        login(self.request, user)  
+        return super().form_valid(form)  
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = "Регистрация" 
+        return context
+    
