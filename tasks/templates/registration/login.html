@@ -1,0 +1,29 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="{% static 'css/login.css' %}">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script type="text/javascript" href="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+    <title>Вход</title>
+</head>
+<body>
+        <div class="container">
+            <p class="heading">Вход</p>
+            <form method="POST" action="{% url 'login' %}">
+            {% csrf_token %}
+            <div class="box">
+                <p>Email</p>
+                <div> <input type="text" name="username" autocomplete="off" placeholder="Enter your email"> </div>
+            </div>
+            <div class="box">
+                <p>Password</p>
+                <div> <input type="password" name="password" autocomplete="off" placeholder="Enter your password"> </div>
+            </div> <button class="loginBtn">Вход</button>
+            </form>
+            <p class="text">У вас нет аккаунта? <a href="{% url 'register' %}">Регистрация</a></p>
+        </div>
+</body>
+</html>

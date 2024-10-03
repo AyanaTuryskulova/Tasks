@@ -1,0 +1,38 @@
+
+
+ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background-color: rgb(199, 255, 244);
+}
+
+li {
+    float: left;
+}
+
+li a {
+    display: block;
+    color: rgb(124, 114, 114);
+    text-align: center;
+    padding: 20px 35px;
+}
+
+lia {
+    display: block;
+    color: rgb(124, 114, 114);
+    text-align: center;
+    padding: 14px 16px;
+    float: right;
+
+}
+
+li a:hover {
+    background-color: rgb(246, 231, 170);
+}
+
+col-md-8 {
+    justify-content: center;
+
+}
