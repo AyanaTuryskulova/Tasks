@@ -9,9 +9,9 @@
 </head>
 <body>
    <ul>
-    <li><a class="active" href="#">Профиль</a></li>
+    <li><a class="active" href="{% url 'profile' %}">Профиль</a></li>
     <li><a href="{% url 'tasks' %}">Задачи</a></li>
-    <li><a href="#">Добавить</a></li>
+    <li><a href="{% url 'task_add' %}">Добавить</a></li>
     <lia><a href="{% url 'logout' %}">Выйти</a></lia>
     {% if request.user.is_authenticated %}
     <lia>User: {{ request.user }}</lia>

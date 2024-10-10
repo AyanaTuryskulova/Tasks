@@ -1,4 +1,4 @@
-from pyexpat.errors import messages
+from django.contrib import messages
 from django.shortcuts import get_object_or_404, render
 from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import redirect #можем указать рандомную ссылку куда сайт направит 
@@ -7,17 +7,18 @@ from django.utils import timezone
 from .models import Task_post
 from .forms import PostForm, RegisterUserForm
 from django.views.generic import CreateView
-from django.contrib.auth.mixins import LoginRequiredMixin
-from django.views.generic import DeleteView
+
 
 
 def page(request):
      return render(request, 'tasks/main_page.html')
 
+def profile(request):
+    return render(request, 'tasks/profile.html')
 
 def task_view(request):
-    posts = Task_post.objects.filter(published_date__lte=timezone.now()).order_by('published_date')
-    return render(request, 'tasks/tasks.html', {'posts': posts})
+    tasks = Task_post.objects.all()  
+    return render(request, 'tasks/tasks.html', {'posts': tasks})
 
 def post_detail(request, pk):
     post = get_object_or_404(Task_post, pk=pk)
@@ -47,7 +48,36 @@ def post_edit(request, pk):
     return render(request, 'tasks/post_edit.html', {'form': form})  
 
 
+def delete_post(request, pk):
+    post = get_object_or_404(Task_post, pk=pk)
+    post.delete()
+    return redirect('tasks')
 
+def task_add_view(request):
+    if request.method == 'POST':
+        form = PostForm(request.POST)
+        if form.is_valid():
+            task = form.save(commit=False)
+            task.published_date = timezone.now()
+            task.save()
+            messages.success(request,'Ваш пост был добавлен!' )
+            return redirect('task_add')  
+    else:
+        form = PostForm()
+    return render(request, 'tasks/add.html', {'form': form})
+
+
+def task_list_view(request):
+    category = request.GET.get('category', None)
+
+    if category:
+        tasks = Task_post.objects.filter(category=category)
+
+    else:
+        tasks = Task_post.objects.all()
+
+    return render(request, 'tasks/tasks.html', {'posts': tasks, 'selected_category': category})
+    
 
 def user_login(request):   
     if request.POST:
@@ -65,7 +95,7 @@ def user_logout(request):
     logout(request)
     return redirect('login')
 
-
+    
 
 class RegisterUser(CreateView):
     form_class = RegisterUserForm  

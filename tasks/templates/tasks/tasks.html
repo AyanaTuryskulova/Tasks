@@ -2,16 +2,43 @@
 
 {% block content %}
     <h1>Мои задачи</h1>
+    
+    <div class="filter">
+        <a href="{% url 'task_list' %}?category=Work" class="btn btn-primary {% if selected_category == 'Work' %}active{% endif %}">
+            Work
+        </a>
+        <a href="{% url 'task_list' %}?category=Personal" class="btn btn-primary {% if selected_category == 'Personal' %}activate{% endif %}">
+            Personal
+        </a>
+        <a href="{% url 'task_list' %}" class="btn btn-secondary {% if not selected_category %}active{% endif %}">
+            Все задачи
+        </a>
+    </div>
+
+
     {% if posts %}
-        {% for post in posts %}
-            <div>
-                <h2><a href="{% url 'post_detail' pk=post.pk %}">{{ post.title }}</a></h2>
+        <ul class="list-group">
+            {% for post in posts %}
+            <li class="list-group-item">
+                <h2>
+                    <a href="{% url 'post_detail' pk=post.pk %}">{{ post.title }}</a>
+                </h2>
                 <p>Опубликовано: {{ post.published_date }}</p>
+                <p>Категория: {{ post.get_category_display }}</p> 
                 <p>Статус: {{ post.status }}</p>
                 <p>Важность: {{ post.priority }}</p>
                 <p>{{ post.description|linebreaksbr }}</p>
-            </div>
-        {% endfor %}
+
+     
+                <form method="POST" action="{% url 'delete_post' pk=post.pk %}" style="display:inline;">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger" onclick="return confirm('Вы уверены, что хотите удалить эту задачу?');"> <span class="glyphicon glyphicon-trash"></span> &nbsp;
+                        Удалить
+                    </button>
+                </form>
+            </li>
+            {% endfor %}
+        </ul>
     {% else %}
         <p>Задачи отсутствуют.</p>
     {% endif %}
